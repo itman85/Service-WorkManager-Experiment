@@ -11,6 +11,8 @@ import phannguyen.sample.serviceexperimental.TestLongRunningService;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 
+import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
+
 public class LongProcessingWorker extends Worker {
 
     public static final String TASK_DATA_INTERVAL_WORKER_TAG = "TASK_DATA_INTERVAL_WORKER_TAG";
@@ -21,6 +23,7 @@ public class LongProcessingWorker extends Worker {
         super(context, workerParams);
         SbLog.i(TAG,"onCreate");
         FileLogs.writeLog(context,TAG,"I","onCreate");
+        FileLogs.writeLog(context,APP_TAG,"I","Long processing worker created");
     }
 
     @NonNull
@@ -28,6 +31,7 @@ public class LongProcessingWorker extends Worker {
     public Result doWork() {
         SbLog.i(TAG,"doWork");
         FileLogs.writeLog(this.getApplicationContext(),TAG,"I","doWork");
+        FileLogs.writeLog(this.getApplicationContext(),APP_TAG,"I","Long processing worker DoWork...");
         TestLongRunningService.enqueueWork(this.getApplicationContext(),new Intent(this.getApplicationContext(),TestLongRunningService.class));
         return Result.success();
     }
@@ -35,6 +39,7 @@ public class LongProcessingWorker extends Worker {
     @Override
     public void onStopped() {
         FileLogs.writeLog(this.getApplicationContext(),TAG,"I","onStopped");
+        FileLogs.writeLog(this.getApplicationContext(),APP_TAG,"I","Long processing worker Stopped");
         super.onStopped();
     }
 }

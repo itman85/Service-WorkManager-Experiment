@@ -11,6 +11,7 @@ import androidx.work.ExistingWorkPolicy;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 
+import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
 import static phannguyen.sample.serviceexperimental.utils.Constant.INTERVAL_PROCESS_DATA;
 
 public class TestLongRunningService extends JobIntentService {
@@ -27,6 +28,7 @@ public class TestLongRunningService extends JobIntentService {
     public void onCreate() {
         SbLog.i(TAG,"onCreate Fire");
         FileLogs.writeLog(this,TAG,"I","onCreate Fire");
+        FileLogs.writeLog(this,APP_TAG,"I","Long Running Service Created");
         super.onCreate();
 
     }
@@ -34,15 +36,18 @@ public class TestLongRunningService extends JobIntentService {
     protected void onHandleWork(@NonNull Intent intent) {
         SbLog.i(TAG,"onHandleWork Start");
         FileLogs.writeLog(this,TAG,"I","onHandleWork Start");
+        FileLogs.writeLog(this,APP_TAG,"I","Long Running Service Start");
         try {
             Thread.sleep(180000);// 3 mins to complete processing
             SbLog.i(TAG,"onHandleWork Finish");
             FileLogs.writeLog(this,TAG,"I","onHandleWork Finish");
+            FileLogs.writeLog(this,APP_TAG,"I","Long Running Service Finish");
             WorkManagerHelper.startOneTimeLongProcessWorker(this, ExistingWorkPolicy.KEEP.ordinal(),INTERVAL_PROCESS_DATA);
             stopSelf();
         } catch (InterruptedException e) {
             SbLog.e(TAG,e);
             FileLogs.writeLog(this,TAG,"E","onHandleWork Error "+ Log.getStackTraceString(e));
+            FileLogs.writeLog(this,APP_TAG,"I","Long Running Service Error "+Log.getStackTraceString(e) );
         }
     }
 
@@ -50,6 +55,7 @@ public class TestLongRunningService extends JobIntentService {
     public void onDestroy() {
         SbLog.i(TAG,"onDestroy Fire");
         FileLogs.writeLog(this,TAG,"I","onDestroy Fire");
+        FileLogs.writeLog(this,APP_TAG,"I","Long Running Service Destroy");
         super.onDestroy();
     }
 }

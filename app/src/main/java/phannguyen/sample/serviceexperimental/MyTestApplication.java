@@ -8,6 +8,8 @@ import androidx.work.Configuration;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 
+import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
+
 public class MyTestApplication extends Application implements Configuration.Provider {
     private static final String TAG = "MyTestApplication";
     @Override
@@ -15,7 +17,7 @@ public class MyTestApplication extends Application implements Configuration.Prov
         super.onCreate();
         SbLog.i(TAG,"onCreate Fire");
         FileLogs.writeLog(this,TAG,"I","onCreate Fire");
-
+        FileLogs.writeLog(this,APP_TAG,"I","App created");
     }
 
     @NonNull

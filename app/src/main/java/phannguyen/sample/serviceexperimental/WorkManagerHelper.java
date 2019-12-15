@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.workers.LongProcessingWorker;
 
+import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
 import static phannguyen.sample.serviceexperimental.workers.LongProcessingWorker.TASK_DATA_INTERVAL_WORKER_UNIQUE_NAME;
 
 public class WorkManagerHelper {
@@ -18,6 +19,7 @@ public class WorkManagerHelper {
 
     public static void startOneTimeLongProcessWorker(Context context,int workPolicyVal, long delayInSecond){
         FileLogs.writeLog(context,TAG,"I","startOneTimeLongProcessWorker Start with delayInSecond = " + delayInSecond);
+        FileLogs.writeLog(context,APP_TAG,"I","startOneTimeLongProcessWorker with delay In Mins = " + (delayInSecond/60));
         ExistingWorkPolicy workPolicy = ExistingWorkPolicy.REPLACE;//replace by new request
         switch (workPolicyVal){
             case 0:
