@@ -39,5 +39,10 @@ https://developer.android.com/topic/libraries/architecture/workmanager/advanced/
  Xem nó ghi log trong bao nhiêu ngày.
 
 # Report result for Android 7, 8, 9: ???
+- Android 9 không start JobIntentService background từ broadcast receiver 
+- Android 8,9 work ok with this approach, test with android 7?
 
+# App Start|--(1)Running Service--|------------(2)Waiting for worker invoke-------|--Running Service--|------------Waiting for worker invoke-------\---------
+(1): khi reboot at this moment thi work chua enqueued va no se start one time work khi reboot
+(2): khi reboot at this moment thi work da enqueued, nen se waiting until main interval worker doWork  
 

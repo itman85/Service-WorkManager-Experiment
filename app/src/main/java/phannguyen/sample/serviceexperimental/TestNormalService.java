@@ -10,6 +10,8 @@ import androidx.annotation.Nullable;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 
+import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
+
 /**
  * NOTE: from android 8 , cannot start service in background, must start a foreground service, so use JobIntentService instead
  */
@@ -25,7 +27,7 @@ public class TestNormalService extends Service {
     public void onCreate() {
         super.onCreate();
         SbLog.i(TAG,"onCreate Fire");
-        FileLogs.writeLog(this,TAG,"I","onCreate Fire");
+        FileLogs.writeLog(this,APP_TAG,"I","TestNormalService onCreate Fire");
 
 
     }
@@ -33,14 +35,16 @@ public class TestNormalService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         SbLog.i(TAG,"onStartCommand Start");
-        FileLogs.writeLog(this,TAG,"I","onStartCommand Start");
+        FileLogs.writeLog(this,APP_TAG,"I","TestNormalService onStartCommand Start");
         try {
             Thread.sleep(30000);
             SbLog.i(TAG,"onStartCommand Finish");
-            FileLogs.writeLog(this,TAG,"I","onStartCommand Finish");
+            FileLogs.writeLog(this,APP_TAG,"I","TestNormalService onStartCommand Finish");
         } catch (InterruptedException e) {
             SbLog.e(TAG,e);
-            FileLogs.writeLog(this,TAG,"E","onStartCommand Error "+ Log.getStackTraceString(e));
+            FileLogs.writeLog(this,APP_TAG,"E","TestNormalService onStartCommand Error "+ Log.getStackTraceString(e));
+        }finally {
+            stopSelf();
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -49,6 +53,6 @@ public class TestNormalService extends Service {
     public void onDestroy() {
         super.onDestroy();
         SbLog.i(TAG,"onDestroy Fire");
-        FileLogs.writeLog(this,TAG,"I","onDestroy Fire");
+        FileLogs.writeLog(this,APP_TAG,"I","TestNormalService onDestroy Fire");
     }
 }

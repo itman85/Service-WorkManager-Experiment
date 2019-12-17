@@ -21,6 +21,7 @@ public class TestLongRunningService extends JobIntentService {
     private static final String TAG = "TestLongRunningService";
 
     public static void enqueueWork(Context context, Intent intent) {
+        // todo check if service running, then skip start.
         enqueueWork(context, TestLongRunningService.class, JOB_ID, intent);
     }
 
@@ -36,18 +37,20 @@ public class TestLongRunningService extends JobIntentService {
     protected void onHandleWork(@NonNull Intent intent) {
         SbLog.i(TAG,"onHandleWork Start");
         FileLogs.writeLog(this,TAG,"I","onHandleWork Start");
-        FileLogs.writeLog(this,APP_TAG,"I","Long Running Service Start");
+        FileLogs.writeLog(this,APP_TAG,"I","Long Running Service Start In 5 Mins");
         try {
-            Thread.sleep(180000);// 3 mins to complete processing
+            Thread.sleep(300000);// 5 mins to complete processing
             SbLog.i(TAG,"onHandleWork Finish");
             FileLogs.writeLog(this,TAG,"I","onHandleWork Finish");
             FileLogs.writeLog(this,APP_TAG,"I","Long Running Service Finish");
-            WorkManagerHelper.startOneTimeLongProcessWorker(this, ExistingWorkPolicy.KEEP.ordinal(),INTERVAL_PROCESS_DATA);
-            stopSelf();
         } catch (InterruptedException e) {
             SbLog.e(TAG,e);
             FileLogs.writeLog(this,TAG,"E","onHandleWork Error "+ Log.getStackTraceString(e));
             FileLogs.writeLog(this,APP_TAG,"I","Long Running Service Error "+Log.getStackTraceString(e) );
+        } finally {
+            FileLogs.writeLog(this,APP_TAG,"I","Long Running Service Finally");
+            WorkManagerHelper.startOneTimeLongProcessWorker(this, ExistingWorkPolicy.REPLACE.ordinal(),INTERVAL_PROCESS_DATA);
+            stopSelf();
         }
     }
 
