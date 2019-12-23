@@ -31,6 +31,7 @@ public class LongProcessingWorker extends Worker {
         FileLogs.writeLog(this.getApplicationContext(),TAG,"I","doWork");
         FileLogs.writeLog(this.getApplicationContext(),APP_TAG,"I","Long processing worker DoWork...");
         TestLongRunningService.enqueueWork(this.getApplicationContext(),new Intent(this.getApplicationContext(),TestLongRunningService.class));
+        FileLogs.writeLog(this.getApplicationContext(),APP_TAG,"I","Long processing worker EndWork...");
         return Result.success();
     }
 

@@ -29,8 +29,8 @@ public class WorkManagerHelper {
     private static final String TAG = "WorkManagerHelper";
 
     public static void startOneTimeLongProcessWorker(Context context,int workPolicyVal, long delayInSecond){
-        FileLogs.writeLog(context,TAG,"I","startOneTimeLongProcessWorker Start with delayInSecond = " + delayInSecond);
-        FileLogs.writeLog(context,APP_TAG,"I","startOneTimeLongProcessWorker with delay In Mins = " + (delayInSecond/60));
+        FileLogs.writeLog(context,TAG,"I","startLongProcessWorker Start with delayInSecond = " + delayInSecond);
+        FileLogs.writeLog(context,APP_TAG,"I","startLongProcessWorker with delay In Mins = " + (delayInSecond/60));
         ExistingWorkPolicy workPolicy = ExistingWorkPolicy.REPLACE;//replace by new request
         switch (workPolicyVal){
             case 0:

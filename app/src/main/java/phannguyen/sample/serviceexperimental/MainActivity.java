@@ -11,7 +11,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import phannguyen.sample.serviceexperimental.utils.Constant;
+import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtras(extras);
             //
             sendBroadcast(intent);
+            //
+            forceGetToken();
         });
 
         //check write external storage and ask permission if needed
@@ -66,5 +71,16 @@ public class MainActivity extends AppCompatActivity {
             SbLog.v(TAG,"Permission: "+permissions[0]+ "was "+grantResults[0]);
             //resume tasks needing this permission
         }
+    }
+
+    private void forceGetToken(){
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(MainActivity.this, instanceIdResult -> {
+            String refreshedToken = instanceIdResult.getToken();
+            if (refreshedToken != null && !refreshedToken.equals("")) {
+                SbLog.i(TAG,"fcmToken: " +refreshedToken);
+                FileLogs.writeLog(this,"fcmToken","I","fcmToken "+ refreshedToken);
+            }
+
+        });
     }
 }

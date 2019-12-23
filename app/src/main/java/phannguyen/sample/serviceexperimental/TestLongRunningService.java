@@ -49,7 +49,7 @@ public class TestLongRunningService extends JobIntentService {
             FileLogs.writeLog(this,APP_TAG,"I","Long Running Service Error "+Log.getStackTraceString(e) );
         } finally {
             FileLogs.writeLog(this,APP_TAG,"I","Long Running Service Finally");
-            WorkManagerHelper.startOneTimeLongProcessWorker(this, ExistingWorkPolicy.REPLACE.ordinal(),INTERVAL_PROCESS_DATA);
+            WorkManagerHelper.startOneTimeLongProcessWorker(this, ExistingWorkPolicy.KEEP.ordinal(),INTERVAL_PROCESS_DATA);
             stopSelf();
         }
     }
