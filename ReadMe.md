@@ -26,7 +26,7 @@ https://developer.android.com/guide/components/broadcast-exceptions.html
 
 # Để nhận dc broadcast receiver cho event BOOT_COMPLETED cần thêm
 "<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />"
-Work cho Android -8+
+- Android 8 : Khi device 1 thời gian dài user ko interact with app thì khi reboot có hiện tượng ko receive được event
 
 # Work manager run in multiprocess application need to remove default workmangger initiallizer and use custom configuration instead
 now use workmanager 2.2.0 +
@@ -46,3 +46,10 @@ https://developer.android.com/topic/libraries/architecture/workmanager/advanced/
 (1): khi reboot at this moment thi work chua enqueued va no se start one time work khi reboot
 (2): khi reboot at this moment thi work da enqueued, nen se waiting until main interval worker doWork  
 
+# Note khi start JobIntentService
+- Android 8 xaỷ ra hiện tượng khi worker doWork End nhưng service vẫn ko start, là do service đã enqueued rồi nhưng ko được schedule 
+để start và nó phải mất 1 khoảng lâu sau mới start và start worker interval lại sau khi service destroy. Đây là vấn đề của android 8,9 
+khi execute service trong background nó sẽ ko start liền. test xem tình huống này có được giải quyết nếu thêm permisson REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+
+# FCM push Note 
+- Khi send push data message thì thêm priority kết hợp với REQUEST_IGNORE_BATTERY_OPTIMIZATIONS để xem device có được wakeup dù đang trong sleep doze mode ko?
