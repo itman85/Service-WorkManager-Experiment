@@ -49,7 +49,7 @@ public class TestOldLongRunningService extends IntentService {
         FileLogs.writeLogInThread(this,TAG,"I","onHandleWork Start "+serviceNumber);
         FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 2.Long Running Service Start In 5 Mins " + serviceNumber);
         try {
-            Thread.sleep(30000);// 5 mins to complete processing
+            Thread.sleep(300000);// 5 mins to complete processing
             SbLog.i(TAG,"onHandleWork Finish");
             FileLogs.writeLogInThread(this,TAG,"I","onHandleWork Finish " + serviceNumber);
             FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 3.Long Running Service Finish "+ serviceNumber);
@@ -59,7 +59,7 @@ public class TestOldLongRunningService extends IntentService {
             FileLogs.writeLogInThread(this,APP_TAG,"I",serviceNumber + "*** Long Running Service Error "+Log.getStackTraceString(e) );
         } finally {
             FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 4.Long Running Service Finally "+serviceNumber);
-            //WorkManagerHelper.startOneTimeLongProcessWorker(this, ExistingWorkPolicy.KEEP.ordinal(),INTERVAL_PROCESS_DATA);
+            WorkManagerHelper.startOneTimeLongProcessWorker(this, ExistingWorkPolicy.KEEP.ordinal(),INTERVAL_PROCESS_DATA);
             //stopSelf(); intent service will stopSelf() as it done
         }
     }
@@ -70,7 +70,7 @@ public class TestOldLongRunningService extends IntentService {
        // serviceNumber = (long)(Math.random()*1000000) + 1;//random from 1 -> 1M
         SbLog.i(TAG,"onCreate Fire " + serviceNumber);
         FileLogs.writeLogInThread(this,TAG,"I","onCreate Fire " + serviceNumber);
-        FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 1.Long Running Service Created "+serviceNumber);
+        FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 1.Long Running Service Created(Android 7-) "+serviceNumber);
 
     }
 

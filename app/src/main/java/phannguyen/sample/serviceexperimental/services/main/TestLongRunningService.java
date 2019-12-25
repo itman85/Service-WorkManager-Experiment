@@ -6,11 +6,14 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.JobIntentService;
+import androidx.work.ExistingWorkPolicy;
 
+import phannguyen.sample.serviceexperimental.helpers.WorkManagerHelper;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 
 import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
+import static phannguyen.sample.serviceexperimental.utils.Constant.INTERVAL_PROCESS_DATA;
 
 /**
  * This user will be used in android 8+ for long running tasks
@@ -37,7 +40,7 @@ public class TestLongRunningService extends JobIntentService {
         serviceRunCount = 0;
         SbLog.i(TAG,"onCreate Fire");
         FileLogs.writeLogInThread(this,TAG,"I","onCreate Fire " + serviceNumber);
-        FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 1.Long Running Service Created "+serviceNumber);
+        FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 1.Long Running Service(Android 8+) Created "+serviceNumber);
         super.onCreate();
 
     }
@@ -50,7 +53,7 @@ public class TestLongRunningService extends JobIntentService {
         FileLogs.writeLogInThread(this,TAG,"I","onHandleWork Start "+serviceNumber);
         FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 2.Long Running Service Start In 5 Mins " + serviceNumber);
         try {
-            Thread.sleep(30000);// 5 mins to complete processing
+            Thread.sleep(300000);// 5 mins to complete processing
             SbLog.i(TAG,"onHandleWork Finish");
             FileLogs.writeLogInThread(this,TAG,"I","onHandleWork Finish " + serviceNumber);
             FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 3.Long Running Service Finish "+ serviceNumber);
@@ -60,7 +63,7 @@ public class TestLongRunningService extends JobIntentService {
             FileLogs.writeLogInThread(this,APP_TAG,"I",serviceNumber + "*** Long Running Service Error "+Log.getStackTraceString(e) );
         } finally {
             FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 4.Long Running Service Finally "+serviceNumber);
-            //WorkManagerHelper.startOneTimeLongProcessWorker(this, ExistingWorkPolicy.KEEP.ordinal(),INTERVAL_PROCESS_DATA);
+            WorkManagerHelper.startOneTimeLongProcessWorker(this, ExistingWorkPolicy.KEEP.ordinal(),INTERVAL_PROCESS_DATA);
             stopSelf();
         }
     }

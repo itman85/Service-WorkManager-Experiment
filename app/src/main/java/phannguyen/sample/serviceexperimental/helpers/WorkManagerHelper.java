@@ -6,7 +6,6 @@ import android.content.Context;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
-import androidx.work.Constraints;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
@@ -18,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 import phannguyen.sample.serviceexperimental.workers.LongProcessingWorker;
-import phannguyen.sample.serviceexperimental.workers.StartServiceWorker;
+import phannguyen.sample.serviceexperimental.workers.OneTimeWorker;
 
 import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
 import static phannguyen.sample.serviceexperimental.utils.Constant.TASK_DATA_INTERVAL_MAIN_WORKER_TAG;
@@ -62,7 +61,7 @@ public class WorkManagerHelper {
         FileLogs.writeLogNoThread(context,APP_TAG,"I","startOneTimeWorker with delay In Mins = " + (delayInSecond/60));
 
         OneTimeWorkRequest collectDataWork =
-                new OneTimeWorkRequest.Builder(StartServiceWorker.class)
+                new OneTimeWorkRequest.Builder(OneTimeWorker.class)
                         .setInitialDelay(delayInSecond, TimeUnit.SECONDS)
                         .addTag(TASK_DATA_ONETIME_WORKER_TAG)// Use this when you want to add initial delay or schedule initial work to `OneTimeWorkRequest` e.g. setInitialDelay(2, TimeUnit.HOURS)
                         .build();

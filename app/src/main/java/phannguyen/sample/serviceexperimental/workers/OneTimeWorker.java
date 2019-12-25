@@ -14,15 +14,15 @@ import phannguyen.sample.serviceexperimental.utils.SbLog;
 
 import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
 
-public class StartServiceWorker extends Worker {
+public class OneTimeWorker extends Worker {
 
-    private static final String TAG = "StartServiceWorker";
+    private static final String TAG = "OneTimeWorker";
 
-    public StartServiceWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+    public OneTimeWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         SbLog.i(TAG,"onCreate");
         FileLogs.writeLogInThread(context,TAG,"I","onCreate");
-        FileLogs.writeLogNoThread(context,APP_TAG,"I","Start service worker created");
+        FileLogs.writeLogNoThread(context,APP_TAG,"I","one time worker created");
     }
 
     @NonNull
@@ -30,19 +30,19 @@ public class StartServiceWorker extends Worker {
     public Result doWork() {
         SbLog.i(TAG,"doWork");
         FileLogs.writeLogInThread(this.getApplicationContext(),TAG,"I","doWork");
-        FileLogs.writeLogNoThread(this.getApplicationContext(),APP_TAG,"I","Start service worker DoWork...");
+        FileLogs.writeLogNoThread(this.getApplicationContext(),APP_TAG,"I","one time worker DoWork...");
 
         //TestLongRunningService.enqueueWork(this.getApplicationContext(),new Intent(this.getApplicationContext(),TestLongRunningService.class));
         ServiceHelper.startLongRunningServiceInBackground(this.getApplicationContext(),new Intent(this.getApplicationContext(),TestLongRunningService.class));
 
-        FileLogs.writeLogNoThread(this.getApplicationContext(),APP_TAG,"I","Start service worker Endwork...");
+        FileLogs.writeLogNoThread(this.getApplicationContext(),APP_TAG,"I","one time worker Endwork...");
         return Result.success();
     }
 
     @Override
     public void onStopped() {
         FileLogs.writeLogInThread(this.getApplicationContext(),TAG,"I","onStopped");
-        FileLogs.writeLogInThread(this.getApplicationContext(),APP_TAG,"I","Start service worker Stopped");
+        FileLogs.writeLogInThread(this.getApplicationContext(),APP_TAG,"I","one time worker Stopped");
         super.onStopped();
     }
 }
