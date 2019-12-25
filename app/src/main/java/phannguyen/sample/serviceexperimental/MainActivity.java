@@ -8,11 +8,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import phannguyen.sample.serviceexperimental.broadcast.TestBroadcastReceiver;
 import phannguyen.sample.serviceexperimental.utils.Constant;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             String refreshedToken = instanceIdResult.getToken();
             if (refreshedToken != null && !refreshedToken.equals("")) {
                 SbLog.i(TAG,"fcmToken: " +refreshedToken);
-                FileLogs.writeLog(this,"fcmToken","I","fcmToken "+ refreshedToken);
+                FileLogs.writeLogInThread(this,"fcmToken","I","fcmToken "+ refreshedToken);
             }
 
         });

@@ -1,4 +1,4 @@
-# Requirements for broadcast receiver and service:
+# Những yêu cầu về cách hoạt động của broadcast receiver and service:
 1. Broadcast receiver:
 - Fire as device reboot completed
 - Fire as call start broadcast receiver with specific custom action
@@ -6,6 +6,9 @@
 2. Service
 - Run to finish even app close, run on other process
 - Run background
+- Restart after killed by OS, sometime will restart as schedule no need restart immediately
+
+# Những gì quan sát được:
 
 # Some tech learned info
 *** Android 8 việc run background service bị limit nên giải pháp là sài JobIntentService, nó sẽ tự tương thích với từng os version, nếu từ android
@@ -53,3 +56,34 @@ khi execute service trong background nó sẽ ko start liền. test xem tình hu
 
 # FCM push Note 
 - Khi send push data message thì thêm priority kết hợp với REQUEST_IGNORE_BATTERY_OPTIMIZATIONS để xem device có được wakeup dù đang trong sleep doze mode ko?
+
+#######################################################################
+
+# Chia lam 3 group về background schedule job interval:
+*NOTE: kỹ thuật để tạo job interval hiện tại đang dùng work manager, khi device reboot , fcm push (khi job work manager died nhiều ngày)
+- Android 5
+- Android 6,7(Có Doze): xem nếu cần thiết sẽ viết lại interval job chỉ cho nhóm này
+- Android 8,9,10+
+
+
+# Chia lam 3 group về background service execute limitation
+*Note: Kỹ thuật hiện tại đang dùng jobintentservice
+- Android 5
+- Android 6,7(Có Doze): xem lại nếu cần sẽ viết lại start service background chỉ cho nhóm này
+- Android 8,9,10+
+
+# Chia lam 3 group về background tracking: location, geo fencing, user activities
+- Android 5,6,7: Sẽ viết lai background tracking cho nhóm này.
+- Android 8,9
+- Android 10+
+
+# cases cần test cho các device
+1. start service khi click button - kill app xem service có tự restart lại ko?
+2. start service từ push fcm
+3. start service từ reboot
+4. start service tu push fcm khi device in doze mode (android 6+), có thể giả lập device goes into doze mode
+
+- Android 5 : pass 1,2,3 ; 1: FAIL khi kill app ngay khi service đang running thì nó ko restart (do start service old way)
+- Android 6 : pass 1,2,3 ; 1: FAIL khi kill app ngay khi service đang running thì nó ko restart (do start service old way)
+- Android 7 : pass 1,2,3 ; 1: FAIL khi kill app ngay khi service đang running thì nó ko restart (do start service old way)
+- Android 9 : pass 1,2,3 ; 1: OK khi kill app ngay khi service đang running thì nó có schedule để restart (do start service new way for android 8+)

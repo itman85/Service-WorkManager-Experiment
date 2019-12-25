@@ -16,8 +16,8 @@ public class MyTestApplication extends Application implements Configuration.Prov
     public void onCreate() {
         super.onCreate();
         SbLog.i(TAG,"onCreate Fire");
-        FileLogs.writeLog(this,TAG,"I","onCreate Fire");
-        FileLogs.writeLog(this,APP_TAG,"I","App created");
+        FileLogs.writeLogInThread(this,TAG,"I","onCreate Fire");
+        FileLogs.writeLogInThread(this,APP_TAG,"I","App created");
     }
 
     @NonNull

@@ -1,4 +1,4 @@
-package phannguyen.sample.serviceexperimental;
+package phannguyen.sample.serviceexperimental.helpers;
 
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
@@ -29,8 +29,8 @@ public class WorkManagerHelper {
     private static final String TAG = "WorkManagerHelper";
 
     public static void startOneTimeLongProcessWorker(Context context,int workPolicyVal, long delayInSecond){
-        FileLogs.writeLog(context,TAG,"I","startLongProcessWorker Start with delayInSecond = " + delayInSecond);
-        FileLogs.writeLog(context,APP_TAG,"I","startLongProcessWorker with delay In Mins = " + (delayInSecond/60));
+        FileLogs.writeLogInThread(context,TAG,"I","startLongProcessWorker Start with delayInSecond = " + delayInSecond);
+        FileLogs.writeLogNoThread(context,APP_TAG,"I","startLongProcessWorker with delay In Mins = " + (delayInSecond/60));
         ExistingWorkPolicy workPolicy = ExistingWorkPolicy.REPLACE;//replace by new request
         switch (workPolicyVal){
             case 0:
@@ -58,8 +58,8 @@ public class WorkManagerHelper {
     }
 
     public static void startOneTimeWorker(Context context,long delayInSecond){
-        FileLogs.writeLog(context,TAG,"I","startOneTimeWorker Start with delayInSecond = " + delayInSecond);
-        FileLogs.writeLog(context,APP_TAG,"I","startOneTimeWorker with delay In Mins = " + (delayInSecond/60));
+        FileLogs.writeLogInThread(context,TAG,"I","startOneTimeWorker Start with delayInSecond = " + delayInSecond);
+        FileLogs.writeLogNoThread(context,APP_TAG,"I","startOneTimeWorker with delay In Mins = " + (delayInSecond/60));
 
         OneTimeWorkRequest collectDataWork =
                 new OneTimeWorkRequest.Builder(StartServiceWorker.class)
@@ -92,7 +92,7 @@ public class WorkManagerHelper {
 
     public static boolean checkWorkIsStillOn(Context context, String uniqueWorkName){
         WorkInfo.State state = getStateOfWork(context,uniqueWorkName);
-        FileLogs.writeLog(context,APP_TAG,"I","Work State "+ state.name());
+        FileLogs.writeLogNoThread(context,APP_TAG,"I","Work State "+ state.name());
         if(state == WorkInfo.State.ENQUEUED || state == WorkInfo.State.RUNNING)
             return true;
         else

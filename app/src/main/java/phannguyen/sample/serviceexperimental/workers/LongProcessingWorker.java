@@ -7,7 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import phannguyen.sample.serviceexperimental.TestLongRunningService;
+import phannguyen.sample.serviceexperimental.services.main.TestLongRunningService;
+import phannguyen.sample.serviceexperimental.helpers.ServiceHelper;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 
@@ -20,25 +21,27 @@ public class LongProcessingWorker extends Worker {
     public LongProcessingWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         SbLog.i(TAG,"onCreate");
-        FileLogs.writeLog(context,TAG,"I","onCreate");
-        FileLogs.writeLog(context,APP_TAG,"I","Long processing worker created");
+        FileLogs.writeLogInThread(context,TAG,"I","onCreate");
+        FileLogs.writeLogNoThread(context,APP_TAG,"I","Long processing worker created");
     }
 
     @NonNull
     @Override
     public Result doWork() {
         SbLog.i(TAG,"doWork");
-        FileLogs.writeLog(this.getApplicationContext(),TAG,"I","doWork");
-        FileLogs.writeLog(this.getApplicationContext(),APP_TAG,"I","Long processing worker DoWork...");
-        TestLongRunningService.enqueueWork(this.getApplicationContext(),new Intent(this.getApplicationContext(),TestLongRunningService.class));
-        FileLogs.writeLog(this.getApplicationContext(),APP_TAG,"I","Long processing worker EndWork...");
+        FileLogs.writeLogInThread(this.getApplicationContext(),TAG,"I","doWork");
+        FileLogs.writeLogNoThread(this.getApplicationContext(),APP_TAG,"I","Long processing worker DoWork...");
+
+        ServiceHelper.startLongRunningServiceInBackground(this.getApplicationContext(),new Intent(this.getApplicationContext(),TestLongRunningService.class));
+
+        FileLogs.writeLogNoThread(this.getApplicationContext(),APP_TAG,"I","Long processing worker EndWork...");
         return Result.success();
     }
 
     @Override
     public void onStopped() {
-        FileLogs.writeLog(this.getApplicationContext(),TAG,"I","onStopped");
-        FileLogs.writeLog(this.getApplicationContext(),APP_TAG,"I","Long processing worker Stopped");
+        FileLogs.writeLogInThread(this.getApplicationContext(),TAG,"I","onStopped");
+        FileLogs.writeLogInThread(this.getApplicationContext(),APP_TAG,"I","Long processing worker Stopped");
         super.onStopped();
     }
 }
