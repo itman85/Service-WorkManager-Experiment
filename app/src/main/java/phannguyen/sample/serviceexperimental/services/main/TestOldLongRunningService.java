@@ -49,7 +49,7 @@ public class TestOldLongRunningService extends IntentService {
         FileLogs.writeLogInThread(this,TAG,"I","onHandleWork Start "+serviceNumber);
         FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 2.Long Running Service Start In 5 Mins " + serviceNumber);
         try {
-            Thread.sleep(300000);// 5 mins to complete processing
+            Thread.sleep(180000);// 3 mins to complete processing
             SbLog.i(TAG,"onHandleWork Finish");
             FileLogs.writeLogInThread(this,TAG,"I","onHandleWork Finish " + serviceNumber);
             FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 3.Long Running Service Finish "+ serviceNumber);

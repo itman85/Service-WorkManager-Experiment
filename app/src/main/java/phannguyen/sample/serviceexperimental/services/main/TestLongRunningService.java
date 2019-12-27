@@ -22,6 +22,8 @@ public class TestLongRunningService extends JobIntentService {
 
     private static final int JOB_ID = 123;
 
+    private static final int LOOP_NUMBER = 10;
+
     private static final String TAG = "TestLongRunningService";
 
     private long serviceNumber;//generated whenever service created
@@ -53,7 +55,15 @@ public class TestLongRunningService extends JobIntentService {
         FileLogs.writeLogInThread(this,TAG,"I","onHandleWork Start "+serviceNumber);
         FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 2.Long Running Service Start In 5 Mins " + serviceNumber);
         try {
-            Thread.sleep(300000);// 5 mins to complete processing
+            //store current time and serviceNumber at start
+            int loopNth = 1;
+            // 3 mins to complete processing
+            while (loopNth <= LOOP_NUMBER){
+                Thread.sleep(10000); // sleep 10s for each loop
+                loopNth++;
+                //store loopNth for serviceNumber while working
+            }
+            //check if end work - start work < mins for this serviceNumber and loopNth = LOOP_NUMBER then success task and store log for this date
             SbLog.i(TAG,"onHandleWork Finish");
             FileLogs.writeLogInThread(this,TAG,"I","onHandleWork Finish " + serviceNumber);
             FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 3.Long Running Service Finish "+ serviceNumber);
