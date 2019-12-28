@@ -16,8 +16,8 @@ public class ServiceHelper {
      * @param intent
      */
     public static void startLongRunningServiceInBackground(Context context, Intent intent){
-        if (Build.VERSION.SDK_INT >= 26) {
-            //must call in this way from android 8+,
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //must call in this way from android 8(Oreo) or higher,
             TestLongRunningService.enqueueWork(context, intent);
         }else{
             // for android older (from 7,6,5-) will start service in old way (not allow in android 8+)

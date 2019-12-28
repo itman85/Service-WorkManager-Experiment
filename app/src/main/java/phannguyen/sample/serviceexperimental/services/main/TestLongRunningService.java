@@ -14,6 +14,8 @@ import phannguyen.sample.serviceexperimental.utils.SbLog;
 
 import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
 import static phannguyen.sample.serviceexperimental.utils.Constant.INTERVAL_PROCESS_DATA;
+import static phannguyen.sample.serviceexperimental.utils.Constant.SLEEP_TIME_IN_MS;
+import static phannguyen.sample.serviceexperimental.utils.Constant.SLEEP_TIME_LOOP_IN_MS;
 
 /**
  * This user will be used in android 8+ for long running tasks
@@ -21,8 +23,6 @@ import static phannguyen.sample.serviceexperimental.utils.Constant.INTERVAL_PROC
 public class TestLongRunningService extends JobIntentService {
 
     private static final int JOB_ID = 123;
-
-    private static final int LOOP_NUMBER = 10;
 
     private static final String TAG = "TestLongRunningService";
 
@@ -53,27 +53,28 @@ public class TestLongRunningService extends JobIntentService {
             return;
         SbLog.i(TAG,"onHandleWork Start");
         FileLogs.writeLogInThread(this,TAG,"I","onHandleWork Start "+serviceNumber);
-        FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 2.Long Running Service Start In 5 Mins " + serviceNumber);
+        FileLogs.writeLogInThread(this,APP_TAG,"I","*** 2.Long Running Service Start In "+(SLEEP_TIME_IN_MS/60000) + " Mins " + serviceNumber);
         try {
-            //store current time and serviceNumber at start
+            FileLogs.writeDayLogNoThread(this,APP_TAG,"I","* 1. Long service start in  "+ (SLEEP_TIME_IN_MS/60000) + " Mins "+ serviceNumber);
             int loopNth = 1;
+            long loopNumber = SLEEP_TIME_IN_MS/SLEEP_TIME_LOOP_IN_MS;
             // 3 mins to complete processing
-            while (loopNth <= LOOP_NUMBER){
-                Thread.sleep(10000); // sleep 10s for each loop
+            while (loopNth <= loopNumber){
+                Thread.sleep(SLEEP_TIME_LOOP_IN_MS); // sleep 5s for each loop
                 loopNth++;
-                //store loopNth for serviceNumber while working
             }
+            FileLogs.writeDayLogNoThread(this,APP_TAG,"I","** 2. Long service End"+ serviceNumber + "\n");
             //check if end work - start work < mins for this serviceNumber and loopNth = LOOP_NUMBER then success task and store log for this date
             SbLog.i(TAG,"onHandleWork Finish");
             FileLogs.writeLogInThread(this,TAG,"I","onHandleWork Finish " + serviceNumber);
-            FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 3.Long Running Service Finish "+ serviceNumber);
+            FileLogs.writeLogInThread(this,APP_TAG,"I","*** 3.Long Running Service Finish "+ serviceNumber);
         } catch (InterruptedException e) {
             SbLog.e(TAG,e);
             FileLogs.writeLogInThread(this,TAG,"E",serviceNumber + " onHandleWork Error "+ Log.getStackTraceString(e));
             FileLogs.writeLogInThread(this,APP_TAG,"I",serviceNumber + "*** Long Running Service Error "+Log.getStackTraceString(e) );
         } finally {
-            FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 4.Long Running Service Finally "+serviceNumber);
-            WorkManagerHelper.startOneTimeLongProcessWorker(this, ExistingWorkPolicy.KEEP.ordinal(),INTERVAL_PROCESS_DATA);
+            FileLogs.writeLogInThread(this,APP_TAG,"I","*** 4.Long Running Service Finally "+serviceNumber);
+            WorkManagerHelper.scheduleNextWorking(this, ExistingWorkPolicy.KEEP.ordinal(),INTERVAL_PROCESS_DATA);
             stopSelf();
         }
     }
@@ -83,7 +84,7 @@ public class TestLongRunningService extends JobIntentService {
         serviceRunCount = 0;//reset
         SbLog.i(TAG,"onDestroy Fire");
         FileLogs.writeLogInThread(this,TAG,"I","onDestroy Fire "+serviceNumber);
-        FileLogs.writeLogNoThread(this,APP_TAG,"I","*** 5.Long Running Service Destroy "+serviceNumber);
+        FileLogs.writeLogInThread(this,APP_TAG,"I","*** 5.Long Running Service Destroy "+serviceNumber);
         super.onDestroy();
     }
 }

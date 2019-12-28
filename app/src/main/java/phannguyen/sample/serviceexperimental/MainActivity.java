@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,9 +11,7 @@ import android.widget.Button;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import phannguyen.sample.serviceexperimental.broadcast.TestBroadcastReceiver;
 import phannguyen.sample.serviceexperimental.helpers.WorkManagerHelper;
-import phannguyen.sample.serviceexperimental.utils.Constant;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 
@@ -31,8 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
         start.setOnClickListener(view -> {
             FileLogs.writeLogNoThread(this,APP_TAG,"I","App Click Button Start Active");
-            //NOTE From android 8+ must use explicit intent for TestBroadcastReceiver class
-           /* Intent intent = new Intent(this, TestBroadcastReceiver.class);
+            //NOTE From android 8+ must use explicit intent for MainBroadcastReceiver class
+           /* Intent intent = new Intent(this, MainBroadcastReceiver.class);
             intent.setAction(Constant.BROADCAST_CUSTOM_ACTION);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             //
@@ -43,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             sendBroadcast(intent);*/
             // todo consider choose stable way to start running service at press active button,
             // this way not sure work manager will fire worker to doWork after delay exactly
-            WorkManagerHelper.startOneTimeWorker(this,QUICK_DELAY_PROCESS_DATA);
+            WorkManagerHelper.startWorkingInDelayTime(this,QUICK_DELAY_PROCESS_DATA);
             //
             forceGetToken();
         });

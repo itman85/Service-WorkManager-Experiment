@@ -6,15 +6,14 @@ import android.content.Intent;
 
 import phannguyen.sample.serviceexperimental.helpers.ServiceHelper;
 import phannguyen.sample.serviceexperimental.helpers.WorkManagerHelper;
-import phannguyen.sample.serviceexperimental.utils.Constant;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 
 import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
 import static phannguyen.sample.serviceexperimental.utils.Constant.TASK_DATA_INTERVAL_MAIN_WORKER_UNIQUE_NAME;
 
-public class TestBroadcastReceiver extends BroadcastReceiver {
-    private static final String TAG = "TestBroadcastReceiver";
+public class MainBroadcastReceiver extends BroadcastReceiver {
+    private static final String TAG = "MainBroadcastReceiver";
     @Override
     public void onReceive(Context context, Intent intent) {
         SbLog.i(TAG,"onReceive Fire");
@@ -34,7 +33,7 @@ public class TestBroadcastReceiver extends BroadcastReceiver {
             }
 
         }else {
-            //TestLongRunningService.enqueueWork(context,intent);
+            // start service now
             ServiceHelper.startLongRunningServiceInBackground(context, intent);
         }
     }

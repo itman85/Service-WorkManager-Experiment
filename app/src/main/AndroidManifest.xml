@@ -34,7 +34,7 @@
         </activity>
 
         <receiver
-            android:name=".broadcast.TestBroadcastReceiver"
+            android:name=".broadcast.MainBroadcastReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
