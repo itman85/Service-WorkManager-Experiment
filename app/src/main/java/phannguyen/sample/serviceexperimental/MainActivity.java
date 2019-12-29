@@ -4,14 +4,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import phannguyen.sample.serviceexperimental.helpers.WorkManagerHelper;
+import phannguyen.sample.serviceexperimental.services.accessibility.SbAccessibilityService;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 
@@ -25,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button start = findViewById(R.id.startBtn);
+        Button enableService = findViewById(R.id.enableServiceBtn);
 
         start.setOnClickListener(view -> {
             FileLogs.writeLogNoThread(this,APP_TAG,"I","App Click Button Start Active");
@@ -43,6 +51,26 @@ public class MainActivity extends AppCompatActivity {
             WorkManagerHelper.startWorkingInDelayTime(this,QUICK_DELAY_PROCESS_DATA);
             //
             forceGetToken();
+        });
+
+        enableService.setOnClickListener(view -> {
+            if(!isAccessServiceEnabled(MainActivity.this, SbAccessibilityService.class)){
+                new AlertDialog.Builder(MainActivity.this)
+                        .setMessage("Make sure Accessibility Service is enabled in Device Settings (Accessibility section).")
+                        .setPositiveButton("Ok", (dialog, which) -> {
+                            Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+                            startActivityForResult(intent, 0);
+                        }).setNegativeButton("Cancel", (dialog, which) -> {
+                    Toast.makeText(
+                            MainActivity.this,
+                            "In order to use this app you must have Standalone ACCESSIBILITY SERVICE turn on, please reopen app and turn it on.",
+                            Toast.LENGTH_LONG).show();
+                }).show();
+
+            }else{
+                Toast.makeText(MainActivity.this,"Already enable this accessibility service",Toast.LENGTH_LONG).show();
+            }
+
         });
 
         //check write external storage and ask permission if needed
@@ -67,6 +95,13 @@ public class MainActivity extends AppCompatActivity {
             SbLog.v(TAG,"Permission is granted");
             return true;
         }
+    }
+
+    // todo test on other each version of android 5,6,7,8,9,10
+    public boolean isAccessServiceEnabled(Context context, Class accessibilityServiceClass)
+    {
+        String prefString = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        return prefString!= null && prefString.contains(context.getPackageName() + "/" + accessibilityServiceClass.getName());
     }
 
     @Override

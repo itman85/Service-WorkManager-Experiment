@@ -12,6 +12,6 @@ public class BroadcaseReceiverHelper {
     public static PendingIntent getPendingIntentForMainBroadcastReceiver(Context context) {
         Intent alarmIntent = new Intent(context, MainBroadcastReceiver.class);
         alarmIntent.setAction(Constant.BROADCAST_CUSTOM_ACTION);
-        return PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);// keep current alarm instead of creating new one
     }
 }

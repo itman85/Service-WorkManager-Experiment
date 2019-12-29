@@ -86,7 +86,6 @@ public class TestOldLongRunningService extends IntentService {
     }
 
 
-
     @Override
     public void onDestroy() {
         // DO NOT reset serviceRunCount here because onDestroy will be called 1st time

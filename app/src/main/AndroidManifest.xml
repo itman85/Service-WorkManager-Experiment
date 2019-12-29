@@ -33,9 +33,11 @@
             </intent-filter>
         </activity>
 
+        <!-- add process of main receiver same to service, this receiver use to start service -->
         <receiver
             android:name=".broadcast.MainBroadcastReceiver"
-            android:enabled="true">
+            android:enabled="true"
+            android:process=":testservice">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -65,6 +67,22 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
+        </service>
+
+        <!-- todo setting label will display in device setting/accessibility service name, but if set other icon instead of using app icon -->
+        <service
+            android:name=".services.accessibility.SbAccessibilityService"
+            android:enabled="true"
+            android:exported="false"
+            android:label="SbServiceTest"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/serviceconfig" />
         </service>
     </application>
 

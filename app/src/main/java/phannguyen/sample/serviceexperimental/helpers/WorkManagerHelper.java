@@ -34,6 +34,7 @@ public class WorkManagerHelper {
     private static final String TAG = "WorkManagerHelper";
 
     public static void scheduleNextWorking(Context context,int workPolicyVal, long delayInSecond){
+        // todo check if alarm in on so skip schedule for next working (currently solution is to use KEEP in Workmanger and flag UPDATE in alarmmanager)
         if (Build.VERSION.SDK_INT >= SDK_USE_WORK_MANAGER && !TEST_USE_ALARM_MANAGER_FOR_ALL_SDK_VERSION) {
             // for android 6+
             startOneTimeLongProcessWorker(context,workPolicyVal,delayInSecond);
