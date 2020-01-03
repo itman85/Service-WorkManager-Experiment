@@ -6,6 +6,8 @@ import android.os.Build;
 
 import phannguyen.sample.serviceexperimental.services.main.TestLongRunningService;
 import phannguyen.sample.serviceexperimental.services.main.TestOldLongRunningService;
+import phannguyen.sample.serviceexperimental.utils.Constant;
+import phannguyen.sample.serviceexperimental.utils.SharePref;
 
 public class ServiceHelper {
     private static final String TAG = "ServiceHelper";
@@ -16,13 +18,17 @@ public class ServiceHelper {
      * @param intent
      */
     public static void startLongRunningServiceInBackground(Context context, Intent intent){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //must call in this way from android 8(Oreo) or higher,
-            TestLongRunningService.enqueueWork(context, intent);
-        }else{
-            // for android older (from 7,6,5-) will start service in old way (not allow in android 8+)
-            context.startService(new Intent(context, TestOldLongRunningService.class));
-            // if call in android 8+ will get java.lang.IllegalStateException: Not allowed to start service ... app is in background uid UidRecord
+        long lastDone = SharePref.getLastTimeMainServiceDone(context);
+        // if last done of service is longer than interval time, will start service
+        if(System.currentTimeMillis() - lastDone >= Constant.INTERVAL_PROCESS_DATA) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                //must call in this way from android 8(Oreo) or higher,
+                TestLongRunningService.enqueueWork(context, intent);
+            } else {
+                // for android older (from 7,6,5-) will start service in old way (not allow in android 8+)
+                context.startService(new Intent(context, TestOldLongRunningService.class));
+                // if call in android 8+ will get java.lang.IllegalStateException: Not allowed to start service ... app is in background uid UidRecord
+            }
         }
     }
 }

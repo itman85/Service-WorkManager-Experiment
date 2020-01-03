@@ -16,4 +16,5 @@ public class Constant {
     public static final long SLEEP_TIME_LOOP_IN_MS = 5*1000; // 5 second
     public static boolean TEST_USE_ALARM_MANAGER_FOR_ALL_SDK_VERSION = true;// will use alarm manager to schedule job for all android sdk versions from 5 -> 10
     public static int SDK_USE_WORK_MANAGER = Build.VERSION_CODES.O;//from this version of sdk will use work manager instead of alarm manager
+
 }

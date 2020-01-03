@@ -11,6 +11,7 @@ import androidx.work.ExistingWorkPolicy;
 import phannguyen.sample.serviceexperimental.helpers.WorkManagerHelper;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
+import phannguyen.sample.serviceexperimental.utils.SharePref;
 
 import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
 import static phannguyen.sample.serviceexperimental.utils.Constant.INTERVAL_PROCESS_DATA;
@@ -63,6 +64,9 @@ public class TestLongRunningService extends JobIntentService {
                 Thread.sleep(SLEEP_TIME_LOOP_IN_MS); // sleep 5s for each loop
                 loopNth++;
             }
+            // Done @Here
+            SharePref.setLastTimeMainServiceDone(this,System.currentTimeMillis());
+            //
             FileLogs.writeDayLogNoThread(this,APP_TAG,"I","** 2. Long service End"+ serviceNumber + "\n");
             //check if end work - start work < mins for this serviceNumber and loopNth = LOOP_NUMBER then success task and store log for this date
             SbLog.i(TAG,"onHandleWork Finish");
@@ -74,6 +78,7 @@ public class TestLongRunningService extends JobIntentService {
             FileLogs.writeLogInThread(this,APP_TAG,"I",serviceNumber + "*** Long Running Service Error "+Log.getStackTraceString(e) );
         } finally {
             FileLogs.writeLogInThread(this,APP_TAG,"I","*** 4.Long Running Service Finally "+serviceNumber);
+            // todo cancel current schedule and create new schedule
             WorkManagerHelper.scheduleNextWorking(this, ExistingWorkPolicy.KEEP.ordinal(),INTERVAL_PROCESS_DATA);
             stopSelf();
         }

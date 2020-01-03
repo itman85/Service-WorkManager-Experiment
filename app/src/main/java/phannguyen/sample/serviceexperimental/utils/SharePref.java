@@ -53,4 +53,28 @@ public class SharePref {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getInt("loopNth", 0);
     }
+
+    public static long getLastTimeCheckMainService(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getLong("mainservicelasttimechecking", 0);
+    }
+
+    public static void setLastTimeCheckMainService(Context context, long time) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong("mainservicelasttimechecking", time);
+        editor.apply();
+    }
+
+    public static long getLastTimeMainServiceDone(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        return sharedPreferences.getLong("mainservicelasttimedone", 0);
+    }
+
+    public static void setLastTimeMainServiceDone(Context context, long time) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong("mainservicelasttimedone", time);
+        editor.apply();
+    }
 }

@@ -87,3 +87,8 @@ khi execute service trong background nó sẽ ko start liền. test xem tình hu
 - Android 6 : pass 1,2,3 ; 1: FAIL khi kill app ngay khi service đang running thì nó ko restart (do start service old way)
 - Android 7 : pass 1,2,3 ; 1: FAIL khi kill app ngay khi service đang running thì nó ko restart (do start service old way)
 - Android 9 : pass 1,2,3 ; 1: OK khi kill app ngay khi service đang running thì nó có schedule để restart (do start service new way for android 8+)
+
+# How service will run
+- Service chỉ start khi cách lần done trước lâu hơn interval
+- Nếu service mới start thì phải reschedule lại lần start tiếp theo
+- Nếu service đang running thì kiêm tra xem start_source là gì nếu là directly/fcm thì thoat ra và phải reschedule lại
