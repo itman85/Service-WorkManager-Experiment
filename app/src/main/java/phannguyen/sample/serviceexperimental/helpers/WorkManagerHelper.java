@@ -23,6 +23,7 @@ import phannguyen.sample.serviceexperimental.workers.LongProcessingWorker;
 import phannguyen.sample.serviceexperimental.workers.OneTimeWorker;
 
 import static android.content.Context.ALARM_SERVICE;
+import static phannguyen.sample.serviceexperimental.helpers.BroadcaseReceiverHelper.checkMainBroadcastReceiverIsWorking;
 import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
 import static phannguyen.sample.serviceexperimental.utils.Constant.SDK_USE_WORK_MANAGER;
 import static phannguyen.sample.serviceexperimental.utils.Constant.TASK_DATA_INTERVAL_MAIN_WORKER_TAG;
@@ -33,18 +34,22 @@ import static phannguyen.sample.serviceexperimental.utils.Constant.TEST_USE_ALAR
 public class WorkManagerHelper {
     private static final String TAG = "WorkManagerHelper";
 
-    public static void scheduleNextWorking(Context context,int workPolicyVal, long delayInSecond){
-        // todo check if alarm in on so skip schedule for next working (currently solution is to use KEEP in Workmanger and flag UPDATE in alarmmanager)
+    public static void scheduleNextWorking(Context context, Constant.SchedulePolicy schedulePolicy, long delayInSecond){
         if (Build.VERSION.SDK_INT >= SDK_USE_WORK_MANAGER && !TEST_USE_ALARM_MANAGER_FOR_ALL_SDK_VERSION) {
             // for android 6+
-            startOneTimeLongProcessWorker(context,workPolicyVal,delayInSecond);
+            startOneTimeLongProcessWorker(context,schedulePolicy,delayInSecond);
 
         }else{
             // for android 5- use alarm manager
-            scheduleNextWorkingUsingAlarmManager(context,delayInSecond);
+            scheduleNextWorkingUsingAlarmManager(context,schedulePolicy,delayInSecond);
         }
     }
 
+    /**
+     * start right away. replace current alarm if it existing
+     * @param context
+     * @param delayInSecond
+     */
     public static void startWorkingInDelayTime(Context context,long delayInSecond){
         if (Build.VERSION.SDK_INT >= SDK_USE_WORK_MANAGER && !TEST_USE_ALARM_MANAGER_FOR_ALL_SDK_VERSION) {
             // for android 6+
@@ -52,11 +57,11 @@ public class WorkManagerHelper {
 
         }else{
             // for android 5- use alarm manager
-            scheduleNextWorkingUsingAlarmManager(context,delayInSecond);
+            scheduleNextWorkingUsingAlarmManager(context,Constant.SchedulePolicy.Replace,delayInSecond);
         }
     }
 
-    public static boolean checkWorkIsStillOn(Context context, String uniqueWorkName){
+    public static boolean checkWorkerIsStillOn(Context context, String uniqueWorkName){
         if (Build.VERSION.SDK_INT >= SDK_USE_WORK_MANAGER && !TEST_USE_ALARM_MANAGER_FOR_ALL_SDK_VERSION) {
             WorkInfo.State state = getStateOfWork(context, uniqueWorkName);
             FileLogs.writeLogNoThread(context, APP_TAG, "I", "Work State " + state.name());
@@ -71,15 +76,30 @@ public class WorkManagerHelper {
 
     /////////////////////////PRIVATE METHODS////////////////////////////////////
 
-    private static void scheduleNextWorkingUsingAlarmManager(Context context, long delayInSecond){
+    private static void scheduleNextWorkingUsingAlarmManager(Context context, Constant.SchedulePolicy schedulePolicy, long delayInSecond){
         FileLogs.writeLogInThread(context,TAG,"I","schedule next alarm with delayInSecond = " + delayInSecond);
         FileLogs.writeLogNoThread(context,APP_TAG,"I","schedule next alarm with delay In Mins = " + (delayInSecond/60));
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
 
-        long when = System.currentTimeMillis() + delayInSecond*1000;
-
         PendingIntent mainBroadcast = BroadcaseReceiverHelper.getPendingIntentForMainBroadcastReceiver(context);
+
+        // check if replace previous alarm
+        if(schedulePolicy == Constant.SchedulePolicy.Replace){
+            // check if alarm is set, if yes, cancel and create new one
+            if(checkMainBroadcastReceiverIsWorking(context)){
+                alarmManager.cancel(mainBroadcast);
+                mainBroadcast.cancel();
+            }
+        }else if(schedulePolicy == Constant.SchedulePolicy.Keep){
+            if(checkMainBroadcastReceiverIsWorking(context)){
+                return;// alarm is working, so keep the same, do nothing and return
+            }
+            // if no alarm working, then create new one
+        }
+
+        // create new alarm
+        long when = System.currentTimeMillis() + delayInSecond*1000;
 
         int SDK_INT = Build.VERSION.SDK_INT;
 
@@ -92,19 +112,16 @@ public class WorkManagerHelper {
         }
     }
 
-    private static void startOneTimeLongProcessWorker(Context context,int workPolicyVal, long delayInSecond){
+    private static void startOneTimeLongProcessWorker(Context context,Constant.SchedulePolicy schedulePolicy, long delayInSecond){
         FileLogs.writeLogInThread(context,TAG,"I","startLongProcessWorker Start with delayInSecond = " + delayInSecond);
         FileLogs.writeLogNoThread(context,APP_TAG,"I","startLongProcessWorker with delay In Mins = " + (delayInSecond/60));
         ExistingWorkPolicy workPolicy = ExistingWorkPolicy.REPLACE;//replace by new request
-        switch (workPolicyVal){
-            case 0:
+        switch (schedulePolicy){
+            case Replace:
                 workPolicy = ExistingWorkPolicy.REPLACE; // replace worker going to execute
                 break;
-            case 1:
+            case Keep:
                 workPolicy = ExistingWorkPolicy.KEEP;// keep current worker in progress
-                break;
-            case 2:
-                workPolicy = ExistingWorkPolicy.APPEND;
                 break;
         }
 

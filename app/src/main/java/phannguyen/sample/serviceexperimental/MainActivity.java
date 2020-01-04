@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -23,7 +22,7 @@ import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 
 import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
-import static phannguyen.sample.serviceexperimental.utils.Constant.QUICK_DELAY_PROCESS_DATA;
+import static phannguyen.sample.serviceexperimental.utils.Constant.QUICK_DELAY_PROCESS_DATA_IN_SECOND;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             sendBroadcast(intent);*/
             // todo consider choose stable way to start running service at press active button,
             // this way not sure work manager will fire worker to doWork after delay exactly
-            WorkManagerHelper.startWorkingInDelayTime(this,QUICK_DELAY_PROCESS_DATA);
+            WorkManagerHelper.startWorkingInDelayTime(this, QUICK_DELAY_PROCESS_DATA_IN_SECOND);
             //
             forceGetToken();
         });

@@ -26,7 +26,7 @@ public class SbFirebaseMessagingService extends FirebaseMessagingService {
             FileLogs.writeLog(this,APP_TAG,"I","Fcm MessageReceived - Main Work Interval still ON, Will continue doing later...");
         }else{
             FileLogs.writeLog(this,APP_TAG,"I","Fcm MessageReceived - Main Work was clear, start new one time work Now");
-            WorkManagerHelper.startOneTimeWorker(this, Constant.QUICK_DELAY_PROCESS_DATA);
+            WorkManagerHelper.startOneTimeWorker(this, Constant.QUICK_DELAY_PROCESS_DATA_IN_SECOND);
         }*/
         ServiceHelper.startLongRunningServiceInBackground(this.getApplicationContext(),new Intent(this.getApplicationContext(),TestLongRunningService.class));
         SbLog.i(TAG,"onMessageReceived Data: " + remoteMessage.getData());

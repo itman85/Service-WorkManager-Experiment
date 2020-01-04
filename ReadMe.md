@@ -90,5 +90,8 @@ khi execute service trong background nó sẽ ko start liền. test xem tình hu
 
 # How service will run
 - Service chỉ start khi cách lần done trước lâu hơn interval
-- Nếu service mới start thì phải reschedule lại lần start tiếp theo
-- Nếu service đang running thì kiêm tra xem start_source là gì nếu là directly/fcm thì thoat ra và phải reschedule lại
+- Service đang run thì nếu start tiếp sẽ phải skip ko xử lý nữa
+- Khi service run xong done thì sẽ schedule cho lần start tiếp theo follow this rule:
+  + Replace existing schedule để create new schedule
+- Khi trigger từ reboot, fcm push, accessibility service thì start service ngay.
+

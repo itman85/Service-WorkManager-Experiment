@@ -4,20 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
-import androidx.work.ExistingWorkPolicy;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import phannguyen.sample.serviceexperimental.helpers.WorkManagerHelper;
 import phannguyen.sample.serviceexperimental.services.main.TestLongRunningService;
 import phannguyen.sample.serviceexperimental.helpers.ServiceHelper;
-import phannguyen.sample.serviceexperimental.utils.Constant;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 
 import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
-import static phannguyen.sample.serviceexperimental.utils.Constant.INTERVAL_PROCESS_DATA;
-import static phannguyen.sample.serviceexperimental.utils.Constant.QUICK_DELAY_PROCESS_DATA;
 
 public class OneTimeWorker extends Worker {
 

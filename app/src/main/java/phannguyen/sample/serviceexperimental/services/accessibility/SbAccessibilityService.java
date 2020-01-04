@@ -2,8 +2,11 @@ package phannguyen.sample.serviceexperimental.services.accessibility;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
+import android.content.Intent;
 import android.view.accessibility.AccessibilityEvent;
 
+import phannguyen.sample.serviceexperimental.helpers.ServiceHelper;
+import phannguyen.sample.serviceexperimental.services.main.TestLongRunningService;
 import phannguyen.sample.serviceexperimental.utils.Constant;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
@@ -19,11 +22,14 @@ public class SbAccessibilityService extends AccessibilityService {
         FileLogs.writeLogInThread(this,TAG,"I","Created");
     }
 
+    // this run in bg thread
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event != null && event.getPackageName() != null) {
             SbLog.i(TAG,"Event type "+ eventTypeToString(event.getEventType()));
-            FileLogs.writeLogInThread(this,TAG,"I","Event type "+ eventTypeToString(event.getEventType()));
+            SbLog.i(TAG,"Package "+ event.getPackageName());
+            //FileLogs.writeLogInThread(this,TAG,"I","Event type "+ eventTypeToString(event.getEventType()));
+            checkToStartMainServiceProcessData(event.getEventType());
         }
     }
 
@@ -63,18 +69,24 @@ public class SbAccessibilityService extends AccessibilityService {
                 return "TYPE VIEW SCROLLED";
 
                 default:
-                    return "Other Type";
+                    return "Other Type "+eventType;
         }
     }
 
-    private void checkMainService(int eventType){
-        // measure time read data from share prefs, this probably happen every often
-        if( eventType == AccessibilityEvent.TYPE_WINDOWS_CHANGED ) {
-            long lasttimeCheck = SharePref.getLastTimeCheckMainService(this);
-            if (System.currentTimeMillis() - lasttimeCheck > Constant.INTERVAL_PROCESS_DATA*2) {
-                // todo check last sync is on schedule or not, if not start service right away
+    private void checkToStartMainServiceProcessData(int eventType){
+        // measure time read data from share prefs, this probably happen every often -> ~ 15ms 1st time, 0 - 5 ms from 2nd time
+        if( eventType == AccessibilityEvent.WINDOWS_CHANGE_ADDED ) {
+            FileLogs.writeLogInThread(this,TAG,"I","Window added check last time checking service");
+            //long s1 = System.currentTimeMillis();
+            long lastTimeCheck = SharePref.getLastTimeCheckMainService(this);
+            //long s2 = System.currentTimeMillis();
+            //SbLog.i(TAG,"Time to read shareprefs "+(s2-s1));
+            if (System.currentTimeMillis() - lastTimeCheck > Constant.TIME_PERIOD_TO_CHECK_SERVICE_PROCESS_DATA_IN_SECOND * 1000) {
+                FileLogs.writeLogInThread(this,TAG,"I","Main service has not been started for long time, so start service now");
                 // update last time checking main service
                 SharePref.setLastTimeCheckMainService(this, System.currentTimeMillis());
+                // for too long time it has not started service, so start service now
+                ServiceHelper.startLongRunningServiceInBackground(this,new Intent(this, TestLongRunningService.class));
             }
         }
     }

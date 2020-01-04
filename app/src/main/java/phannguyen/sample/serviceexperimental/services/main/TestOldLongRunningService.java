@@ -1,7 +1,6 @@
 package phannguyen.sample.serviceexperimental.services.main;
 
 import android.app.IntentService;
-import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
@@ -10,12 +9,13 @@ import androidx.annotation.Nullable;
 import androidx.work.ExistingWorkPolicy;
 
 import phannguyen.sample.serviceexperimental.helpers.WorkManagerHelper;
+import phannguyen.sample.serviceexperimental.utils.Constant;
 import phannguyen.sample.serviceexperimental.utils.FileLogs;
 import phannguyen.sample.serviceexperimental.utils.SbLog;
 import phannguyen.sample.serviceexperimental.utils.SharePref;
 
 import static phannguyen.sample.serviceexperimental.utils.Constant.APP_TAG;
-import static phannguyen.sample.serviceexperimental.utils.Constant.INTERVAL_PROCESS_DATA;
+import static phannguyen.sample.serviceexperimental.utils.Constant.INTERVAL_PROCESS_DATA_IN_SECOND;
 import static phannguyen.sample.serviceexperimental.utils.Constant.SLEEP_TIME_IN_MS;
 import static phannguyen.sample.serviceexperimental.utils.Constant.SLEEP_TIME_LOOP_IN_MS;
 
@@ -60,7 +60,7 @@ public class TestOldLongRunningService extends IntentService {
                 Thread.sleep(SLEEP_TIME_LOOP_IN_MS); // sleep 5s for each loop
                 loopNth++;
             }
-            // Done @Here
+            // Done @Here update last time done
             SharePref.setLastTimeMainServiceDone(this,System.currentTimeMillis());
             //
             FileLogs.writeDayLogNoThread(this,APP_TAG,"I","** 2. Long service End "+ serviceNumber + "\n");
@@ -74,8 +74,8 @@ public class TestOldLongRunningService extends IntentService {
             FileLogs.writeLogInThread(this,APP_TAG,"I",serviceNumber + "*** Long Running Service Error "+Log.getStackTraceString(e) );
         } finally {
             FileLogs.writeLogInThread(this,APP_TAG,"I","*** 4.Long Running Service Finally "+serviceNumber);
-            // todo cancel current schedule and create new schedule
-            WorkManagerHelper.scheduleNextWorking(this, ExistingWorkPolicy.KEEP.ordinal(),INTERVAL_PROCESS_DATA);
+            // cancel current schedule and create new schedule -> handle by replace flag
+            WorkManagerHelper.scheduleNextWorking(this, Constant.SchedulePolicy.Replace, INTERVAL_PROCESS_DATA_IN_SECOND);
             //stopSelf(); intent service will stopSelf() as it done
         }
     }

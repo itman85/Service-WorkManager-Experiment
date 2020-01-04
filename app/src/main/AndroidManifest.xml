@@ -35,13 +35,19 @@
 
         <!-- add process of main receiver same to service, this receiver use to start service -->
         <receiver
-            android:name=".broadcast.MainBroadcastReceiver"
+            android:name=".broadcast.RebootBroadcastReceiver"
             android:enabled="true"
             android:process=":testservice">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".broadcast.MainBroadcastReceiver"
+            android:enabled="true"
+            android:process=":testservice">
             <intent-filter>
                 <action android:name="phannguyen.com.test.START" />
                 <category android:name="android.intent.category.DEFAULT" />
