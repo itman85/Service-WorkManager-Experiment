@@ -57,36 +57,22 @@ khi execute service trong background nó sẽ ko start liền. test xem tình hu
 # FCM push Note 
 - Khi send push data message thì thêm priority kết hợp với REQUEST_IGNORE_BATTERY_OPTIMIZATIONS để xem device có được wakeup dù đang trong sleep doze mode ko?
 
-#######################################################################
+############################RESULT###########################################
 
-# Chia lam 3 group về background schedule job interval:
+# Chia lam 2 group về background schedule job interval:
 *NOTE: kỹ thuật để tạo job interval hiện tại đang dùng work manager, khi device reboot , fcm push (khi job work manager died nhiều ngày)
-- Android 5
-- Android 6,7(Có Doze): xem nếu cần thiết sẽ viết lại interval job chỉ cho nhóm này
-- Android 8,9,10+
+- Android 5,6,7: Dùng alarm manager để schedule start service interval kết hợp với accessibility service, reboot, fcm push để wakeup start service khi alarm manager died khi run lâu ngày
+- Android 8,9,10+: Dùng work manager để schedule start service interval kết hợp với accessibility service, reboot, fcm push để wakeup start service khi work manager died khi run lâu ngày
 
 
-# Chia lam 3 group về background service execute limitation
-*Note: Kỹ thuật hiện tại đang dùng jobintentservice
-- Android 5
-- Android 6,7(Có Doze): xem lại nếu cần sẽ viết lại start service background chỉ cho nhóm này
-- Android 8,9,10+
+# Chia lam 2 group về background service execute limitation
+- Android 5,6,7: start intent service như bình th
+- Android 8,9,10+: Enqueued jobintentservice để start trong background
 
-# Chia lam 3 group về background tracking: location, geo fencing, user activities
+# Chia lam 3 group về background tracking: location, geo fencing, user activities (sẽ thử nghiệm trong 1 sample khác)
 - Android 5,6,7: Sẽ viết lai background tracking cho nhóm này.
 - Android 8,9
 - Android 10+
-
-# cases cần test cho các device
-1. start service khi click button - kill app xem service có tự restart lại ko?
-2. start service từ push fcm
-3. start service từ reboot
-4. start service tu push fcm khi device in doze mode (android 6+), có thể giả lập device goes into doze mode
-
-- Android 5 : pass 1,2,3 ; 1: FAIL khi kill app ngay khi service đang running thì nó ko restart (do start service old way)
-- Android 6 : pass 1,2,3 ; 1: FAIL khi kill app ngay khi service đang running thì nó ko restart (do start service old way)
-- Android 7 : pass 1,2,3 ; 1: FAIL khi kill app ngay khi service đang running thì nó ko restart (do start service old way)
-- Android 9 : pass 1,2,3 ; 1: OK khi kill app ngay khi service đang running thì nó có schedule để restart (do start service new way for android 8+)
 
 # How service will run
 - Service chỉ start khi cách lần done trước lâu hơn interval
