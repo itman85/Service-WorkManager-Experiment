@@ -14,7 +14,7 @@ public class Constant {
     public static final int DELAY_PROCESS_DATA = 3*60; // 3 mins
     public static final int SERVICE_RUN_TIME = 5*60; // 5 mins
 
-    public static final int QUICK_DELAY_PROCESS_DATA_IN_SECOND = 10; // 10 second
+    public static final int QUICK_DELAY_PROCESS_DATA_IN_SECOND = 5; // 10 second
 
     public static final String APP_TAG = "App";
 

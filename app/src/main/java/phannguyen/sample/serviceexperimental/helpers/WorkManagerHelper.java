@@ -87,16 +87,19 @@ public class WorkManagerHelper {
         // check if replace previous alarm
         if(schedulePolicy == Constant.SchedulePolicy.Replace){
             // check if alarm is set, if yes, cancel and create new one
-            if(checkMainBroadcastReceiverIsWorking(context)){
+            if(mainBroadcast!=null){
                 alarmManager.cancel(mainBroadcast);
                 mainBroadcast.cancel();
             }
         }else if(schedulePolicy == Constant.SchedulePolicy.Keep){
-            if(checkMainBroadcastReceiverIsWorking(context)){
+            if(mainBroadcast!=null){
                 return;// alarm is working, so keep the same, do nothing and return
             }
             // if no alarm working, then create new one
         }
+
+        // create new one
+        mainBroadcast = BroadcaseReceiverHelper.createPendingIntentForMainBroadcastReceiver(context);
 
         // create new alarm
         long when = System.currentTimeMillis() + delayInSecond*1000;
