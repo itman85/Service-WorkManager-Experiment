@@ -53,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         enableService.setOnClickListener(view -> {
-            if(!isAccessServiceEnabled(MainActivity.this, SbAccessibilityService.class)){
+            isStoragePermissionGranted();
+           /* if(!isAccessServiceEnabled(MainActivity.this, SbAccessibilityService.class)){
                 new AlertDialog.Builder(MainActivity.this)
                         .setMessage("Make sure Accessibility Service is enabled in Device Settings (Accessibility section).")
                         .setPositiveButton("Ok", (dialog, which) -> {
@@ -68,12 +69,12 @@ public class MainActivity extends AppCompatActivity {
 
             }else{
                 Toast.makeText(MainActivity.this,"Already enable this accessibility service",Toast.LENGTH_LONG).show();
-            }
+            }*/
 
         });
 
         //check write external storage and ask permission if needed
-        isStoragePermissionGranted();
+        //isStoragePermissionGranted();
 
     }
 
